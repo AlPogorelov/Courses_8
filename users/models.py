@@ -6,11 +6,12 @@ class User(AbstractUser):
 
     username = None
     email = models.EmailField(unique=True, verbose_name='Email')
-    phone = models.CharField(max_length=15, verbose_name='Телефон', blank=True, null=True, help_text="Введите номер телефона")
-
+    phone = models.CharField(max_length=15, verbose_name='Телефон', blank=True, null=True,
+                             help_text="Введите номер телефона")
+    tg_chat_id = models.CharField(max_length=50, blank=True, null=True, verbose_name='Телеграмм чат-id',
+                                  help_text='Введите телеграмм чат-id')
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []
-
 
     class Meta:
         verbose_name = 'Пользователь'

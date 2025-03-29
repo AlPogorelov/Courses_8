@@ -45,6 +45,8 @@ INSTALLED_APPS = [
 
     'rest_framework',
     'django_celery_beat',
+    'drf-yasg',
+    'corsheaders',
 
 
     'users',
@@ -59,6 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'config.urls'
@@ -196,3 +199,21 @@ CELERY_BEAT_SCHEDULE = {
         'schedule': timedelta(minutes=10),  # Расписание выполнения задачи (например, каждые 10 минут)
     },
 }
+
+#Telegramm settings
+
+TG_URLS = 'https://api.telegram.org/bot'
+
+TELEGRAM_API_KEY = os.getenv('TELEGRAMM_API_KEY')
+
+#CORS
+
+CORS_ALLOWED_ORIGINS = [
+    '*',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    "https://read-and-write.example.com",
+]
+
+CORS_ALLOW_ALL_ORIGINS = False

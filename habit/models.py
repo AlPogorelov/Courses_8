@@ -59,6 +59,11 @@ class Habit(models.Model):
         default=False,
         verbose_name='Публичная привычка'
     )
+    last_notification = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name='Последнее уведомление'
+    )
 
     def clean(self):
         # Валидация для приятных привычек
