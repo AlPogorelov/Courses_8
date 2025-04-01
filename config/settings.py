@@ -44,8 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
 
     'rest_framework',
+    'rest_framework_simplejwt',
     'django_celery_beat',
-    'drf-yasg',
+    'drf_yasg',
     'corsheaders',
 
 
@@ -173,6 +174,13 @@ CACHES = {
     }
 }
 
+# JWT
+
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+}
+
 # Настройки для Celery
 
 # URL-адрес брокера сообщений
@@ -195,21 +203,21 @@ CELERY_TASK_SERIALIZER = 'json'
 
 CELERY_BEAT_SCHEDULE = {
     'task-name': {
-        'task': 'users.tasks.check_inactive_users',  # Путь к задаче
+        'task': 'habit.tasks.check_habits',  # Путь к задаче
         'schedule': timedelta(minutes=10),  # Расписание выполнения задачи (например, каждые 10 минут)
     },
 }
 
-#Telegramm settings
+# Telegramm settings
 
 TG_URLS = 'https://api.telegram.org/bot'
 
 TELEGRAM_API_KEY = os.getenv('TELEGRAMM_API_KEY')
 
-#CORS
+# CORS
 
 CORS_ALLOWED_ORIGINS = [
-    '*',
+    '<http://localhost:8000>',
 ]
 
 CSRF_TRUSTED_ORIGINS = [

@@ -5,12 +5,14 @@ from config.permissions import IsOwner, AllowAny
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from habit.pagination import HabitPagination
 from habit.serializers import HabitSerializer
 
 
 class HabitViewSet(viewsets.ModelViewSet):
     serializer_class = HabitSerializer
     queryset = Habit.objects.all()
+    pagination_class = HabitPagination
 
     def perform_create(self, serializer):
         new_habit = serializer.save()
@@ -34,7 +36,7 @@ class HabitViewSet(viewsets.ModelViewSet):
         if self.action == 'list_public':
             return Habit.objects.filter(is_public=True)
         if self.request.user.is_authenticated:
-            return Habit.objects.filter(user=self.request.user)
+            return Habit.objects.filter(user=self.request.user_owner)
         return Habit.objects.none()
 
     @action(detail=False, methods=['get'], url_path='public')
@@ -47,3 +49,9 @@ class HabitViewSet(viewsets.ModelViewSet):
             return self.get_paginated_response(serializer.data)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+    def get(self, request):
+        queryset = Habit.objects.all()
+        paginated_queryset = self.paginate_queryset(queryset)
+        serializer = HabitSerializer(paginated_queryset, many=True)
+        return self.get_paginated_response(serializer.data)
