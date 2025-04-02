@@ -70,29 +70,30 @@ class Habit(models.Model):
         if not self.is_useful:
             if self.related_habit:
                 raise ValidationError(
-                    "Приятная привычка не может иметь связанную привычку!"
+                    {'non_field_errors': ["Приятная привычка не может иметь связанную привычку!"]}
                 )
             if self.reward.strip():
                 raise ValidationError(
-                    "Приятная привычка не может иметь вознаграждение!"
+                    {'non_field_errors': ["Приятная привычка не может иметь вознаграждение!"]}
                 )
 
         # Валидация для полезных привычек
         if self.is_useful:
-            if self.related_habit and self.reward.strip():
-                raise ValidationError(
-                    "Нельзя указывать одновременно связанную привычку и вознаграждение!"
-                )
+            if self.related_habit and self.reward:
+                raise ValidationError({
+                    'non_field_errors': ['Нельзя указывать одновременно связанную привычку и вознаграждение!']
+                })
 
             if self.related_habit and self.related_habit.is_useful:
                 raise ValidationError(
-                    "Связанная привычка должна быть приятной!"
+                    {'non_field_errors': ["Связанная привычка должна быть приятной!"]}
                 )
 
         # Общая валидация времени выполнения
+
         if self.execution_time > 120:
             raise ValidationError(
-                "Время выполнения не может превышать 120 секунд!"
+                {'non_field_errors': ["Время выполнения не может превышать 120 секунд!"]}
             )
 
     def save(self, *args, **kwargs):

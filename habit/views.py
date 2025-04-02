@@ -23,23 +23,23 @@ class HabitViewSet(viewsets.ModelViewSet):
         if self.action == 'create':
             self.permission_classes = [IsAuthenticated]
 
-        elif self.action == 'update' or 'partial_update' or 'destroy':
-            self.permission_classes = [IsOwner]
+        elif self.action == 'update' or 'partial_update' or 'destroy' or 'retrieve':
+            self.permission_classes = [IsOwner & IsAuthenticated]
 
-        elif self.action == 'list_public':
+        elif self.action == 'public':
             self.permission_classes = [AllowAny]
 
         return [permission() for permission in self.permission_classes]
 
     def get_queryset(self):
         # Фильтрация для разных сценариев
-        if self.action == 'list_public':
+        if self.action == 'public':
             return Habit.objects.filter(is_public=True)
         if self.request.user.is_authenticated:
-            return Habit.objects.filter(user=self.request.user_owner)
+            return Habit.objects.filter(user_owner=self.request.user)
         return Habit.objects.none()
 
-    @action(detail=False, methods=['get'], url_path='public')
+    @action(detail=False, methods=['get'], url_path='public', url_name='public')
     def list_public(self, request):
         # Получаем отфильтрованный кверисет
         queryset = self.filter_queryset(self.get_queryset())

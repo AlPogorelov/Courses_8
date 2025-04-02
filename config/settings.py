@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'django_celery_beat',
     'drf_yasg',
     'corsheaders',
+    'django_filters',
 
 
     'users',
@@ -217,7 +218,8 @@ TELEGRAM_API_KEY = os.getenv('TELEGRAMM_API_KEY')
 # CORS
 
 CORS_ALLOWED_ORIGINS = [
-    '<http://localhost:8000>',
+    "https://read-only.example.com",
+    "https://read-and-write.example.com",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
