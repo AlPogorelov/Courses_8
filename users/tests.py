@@ -68,6 +68,6 @@ class UserRegistrationTests(APITestCase):
             "email": "test@example.com",
             "password": "plaintext"
         }
-        # response = self.client.post(reverse('users:user-register'), data)
+        self.client.post(reverse('users:user-register'), data)
         user = User.objects.get(email=data['email'])
         self.assertNotEqual(user.password, 'plaintext')
