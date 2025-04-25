@@ -30,7 +30,7 @@ ENV PATH="/home/celeryuser/.local/bin:${PATH}"
 # 8. Устанавливаем зависимости (
 
 COPY requirements.txt .
-RUN pip install --user -r requirements.txt
+RUN pip install -r requirements.txt
 
 # 9. Экспозим порт и запускаем
 EXPOSE 8000
