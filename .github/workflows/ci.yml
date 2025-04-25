@@ -23,8 +23,7 @@ jobs:
 
       - name: Run flake8
         run: |
-          flake8 courses
-          flake8 materials
+          flake8 habit
           flake8 users
 
   test:
