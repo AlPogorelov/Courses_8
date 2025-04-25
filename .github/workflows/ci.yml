@@ -109,8 +109,8 @@ jobs:
               -o UserKnownHostsFile=/dev/null \
               ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
           cd /var/Courses_8/
-          git checkout feature/Docker_init
-          git pull
+          sudo git checkout feature/Docker_init
+          sudo git pull
           docker-compose down
           docker-compose up --build
           EOF
