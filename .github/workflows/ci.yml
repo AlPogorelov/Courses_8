@@ -108,7 +108,7 @@ jobs:
           ssh -T -o StrictHostKeyChecking=no \
               -o UserKnownHostsFile=/dev/null \
               ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-          cd /var/Courses_8/
+          cd /var/www/Courses_8/
           sudo git checkout feature/Docker_init
           sudo git pull
           docker-compose down
