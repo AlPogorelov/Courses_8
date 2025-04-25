@@ -23,7 +23,8 @@ jobs:
 
       - name: Run flake8
         run: |
-          flake8 habit
+          flake8 courses
+          flake8 materials
           flake8 users
 
   test:
@@ -108,8 +109,9 @@ jobs:
           ssh -T -o StrictHostKeyChecking=no \
               -o UserKnownHostsFile=/dev/null \
               ${{ secrets.SSH_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
-          docker pull ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
-          docker stop myapp || true
-          docker rm myapp || true
-          docker run -d --name myapp -p 80:8000 ${{ secrets.DOCKER_HUB_USERNAME }}/myapp:${{ github.sha }}
+          cd /var/HomeWork_30.1/
+          git checkout feature/Docker_init
+          git pull
+          docker-compose down
+          docker-compose up --build
           EOF
