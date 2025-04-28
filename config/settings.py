@@ -107,8 +107,8 @@ DATABASES = {
         'NAME': os.getenv('POSTGRES_DB'),
         'USER': os.getenv('POSTGRES_USER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
-        'HOST': os.getenv('HOST'),
-        'PORT': os.getenv('PORT'),
+        'HOST': os.getenv('POSTGRES_HOST'),
+        'PORT': os.getenv('POSTGRES_PORT'),
 
     }
 }
@@ -168,10 +168,19 @@ AUTH_USER_MODEL = 'users.User'
 STRIPE_API_KEY = os.getenv('STRIPE_API_KEY')
 STRIPE_PUBLISHABLE_KEY = os.getenv('STRIPE_PUBLISHABLE_KEY')
 
+
+CSRF_TRUSTED_ORIGINS = [
+    f'http://{os.getenv("SERVER_IP")}',
+    f'https://{os.getenv("SERVER_IP")}',
+]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
+
 CACHES = {
     'default': {
         'BACKEND': 'django.core.cache.backends.redis.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'LOCATION': 'redis://localhost:6379/1',
     }
 }
 
@@ -214,16 +223,3 @@ CELERY_BEAT_SCHEDULE = {
 TG_URLS = 'https://api.telegram.org/bot'
 
 TELEGRAM_API_KEY = os.getenv('TELEGRAMM_API_KEY')
-
-# CORS
-
-CORS_ALLOWED_ORIGINS = [
-    "https://read-only.example.com",
-    "https://read-and-write.example.com",
-]
-
-CSRF_TRUSTED_ORIGINS = [
-    "https://read-and-write.example.com",
-]
-
-CORS_ALLOW_ALL_ORIGINS = False

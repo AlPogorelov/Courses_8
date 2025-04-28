@@ -1,7 +1,7 @@
 services:
   web:
     build: .
-    command: sh -c "/app/wait-for-db.sh && python manage.py migrate && gunicorn --workers 2 config.wsgi:application --bind 0.0.0.0:8000"
+    command: sh -c "python manage.py migrate && gunicorn config.wsgi:application --bind 0.0.0.0:8000"
     volumes:
       - static_volume:/app/staticfiles
     env_file:
@@ -13,13 +13,8 @@ services:
       db:
         condition: service_healthy
       redis:
-        condition: service_healthy
-    networks:
-      - backend_network
-    deploy:
-      resources:
-        limits:
-          memory: 512M
+        condition: service_started
+
 
   nginx:
     build: ./nginx
@@ -29,16 +24,12 @@ services:
       - static_volume:/app/staticfiles
     depends_on:
       - web
-    networks:
-      - backend_network
-    tty: true
+
 
   db:
     image: postgres:16
-    environment:
-      POSTGRES_DB: ${POSTGRES_DB}
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    env_file:
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -46,55 +37,42 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - backend_network
+
 
   redis:
     image: redis
-    command: redis-server /usr/local/etc/redis/redis.conf
+    expose:
+      - "6379"
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    networks:
-      - backend_network
+      interval: 5s
+      timeout: 3s
+      retries: 3
     volumes:
       - redis_data:/data
-      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
+
 
 
   celery_beat:
     build: .
-    command: celery -A config beat --loglevel=info -s /var/run/celery/celerybeat-schedule --detach
-    user: "1000:1000"
+    command: celery -A config beat --loglevel=info
     env_file: .env
     volumes:
       - ./celery_beat:/app/celery_beat
-    networks:
-      - backend_network
     depends_on:
-      redis:
-        condition: service_healthy
-      db:
-        condition: service_healthy
+      - redis
+      - db
 
   celery_worker:
     build: .
-    command: celery -A config worker --loglevel=INFO --detach
-    user: "1000:1000"
+    command: celery -A config worker --loglevel=INFO
     env_file: .env
-    networks:
-      - backend_network
     depends_on:
-      redis:
-        condition: service_healthy
-      db:
-        condition: service_healthy
+      - redis
+      - db
 
 networks:
-  backend_network:
-    driver: bridge
+  default:
 
 volumes:
   postgres_data:
