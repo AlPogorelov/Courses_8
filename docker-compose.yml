@@ -51,7 +51,7 @@ services:
 
   redis:
     image: redis
-    command: redis-server --save "" --overcommit-memory yes
+    command: redis-server --save "" --overcommit-memory 1
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
