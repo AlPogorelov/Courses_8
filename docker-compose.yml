@@ -51,12 +51,7 @@ services:
 
   redis:
     image: redis
-    command:
-      - redis-server
-      - --save ""
-      - --maxmemory 256mb
-      - --maxmemory-policy allkeys-lru
-      - --vm.overcommit-memory 1
+    command: redis-server /usr/local/etc/redis/redis.conf
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
@@ -66,6 +61,7 @@ services:
       - backend_network
     volumes:
       - redis_data:/data
+      - ./redis/redis.conf:/usr/local/etc/redis/redis.conf
 
 
   celery_beat:
