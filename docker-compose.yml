@@ -13,7 +13,7 @@ services:
       db:
         condition: service_healthy
       redis:
-        condition: service_started
+        condition: service_healthy
     networks:
       - backend_network
     deploy:
@@ -51,7 +51,12 @@ services:
 
   redis:
     image: redis
-    command: redis-server --save "" --overcommit-memory 1
+    command:
+      - redis-server
+      - --save ""
+      - --maxmemory 256mb
+      - --maxmemory-policy allkeys-lru
+      - --vm.overcommit-memory 1
     healthcheck:
       test: [ "CMD", "redis-cli", "ping" ]
       interval: 10s
