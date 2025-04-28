@@ -46,12 +46,16 @@ services:
 
   redis:
     image: redis
-    expose:
-      - "6379"
-    volumes:
-      - redis_data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - backend_network
+    volumes:
+      - redis_data:/data
+
 
   celery_beat:
     build: .
@@ -60,18 +64,26 @@ services:
     env_file: .env
     volumes:
       - ./celery_beat:/app/celery_beat
+    networks:
+      - backend_network
     depends_on:
-      - redis
-      - db
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_healthy
 
   celery_worker:
     build: .
     command: celery -A config worker --loglevel=INFO
     user: "1000:1000"
     env_file: .env
+    networks:
+      - backend_network
     depends_on:
-      - redis
-      - db
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_healthy
 
 networks:
   backend_network:

@@ -1,7 +1,8 @@
+bash
 #!/bin/sh
 
-# Ожидание доступности PostgreSQL на порту 5432
-until nc -z db 5432; do
+# Ожидание доступности PostgreSQL через pg_isready
+until pg_isready -h db -U ${POSTGRES_USER}; do
   echo "Ждем, когда PostgreSQL запустится..."
   sleep 1
 done

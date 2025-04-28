@@ -1,5 +1,7 @@
 FROM python:3.12
 
+RUN apt-get update && apt-get install -y postgresql-client
+
 # 1. Создаем пользователя и группу ПЕРВЫМ ДЕЛОМ
 RUN groupadd -g 1000 celerygroup && \
     useradd --uid 1000 --gid 1000 --create-home --shell /bin/bash celeryuser
